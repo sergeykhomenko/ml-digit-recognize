@@ -3,11 +3,13 @@
 const canvas = document.getElementById('draw_tool_area');
 const context = canvas.getContext('2d');
 
+
 const valueWrapper = document.getElementById('recognizedValue');
 const approveStep = document.querySelector('.recognize--approve');
 const correctionStep = document.querySelector('.recognize--correct');
+const correctionInput = document.getElementById('correctInput');
 
-let currentHash = '';
+let lastRecognizedId = '';
 
 let canvasTop = calculateOffset(canvas, 'offsetTop'), canvasLeft = calculateOffset(canvas);
 window.onresize = () => {
@@ -42,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $('.action--recognize').click(() => {
         axios.post('/api/recognize', {image: canvas.toDataURL('image/png')}).then(
             ({data}) => {
-                currentHash = data.hash;
+                lastRecognizedId = data._id;
                 valueWrapper.innerText = data.value;
 
                 approveStep.classList.toggle('d-none');
@@ -51,8 +53,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     $('.action--approve').click(() => {
-        axios.post('/api/recognize/approve', {hash: currentHash}).then(
-            () => approveStep.classList.toggle('d-none')
+        clearCanvas();
+        approveStep.classList.toggle('d-none');
+    });
+
+    $('.action--decline').click(() => {
+        approveStep.classList.toggle('d-none');
+        correctionStep.classList.toggle('d-none');
+    });
+
+    $('.action--save').click(() => {
+        axios.post('/api/recognize/correction', {id: lastRecognizedId, correction: correctionInput.value}).then(
+            () => {
+                clearCanvas();
+                correctionStep.classList.toggle('d-none');
+            }
         );
     });
 
@@ -65,11 +80,14 @@ function addClick(x, y, dragging) {
 }
 
 function redraw() {
-    context.clearRect(0, 0, 200, 400); // Clears the canvas
+    context.clearRect(0, 0, 400, 200); // Clears the canvas
+
+    context.fillStyle = '#ffffff';
+    context.fillRect(0, 0, 400, 200);
 
     context.strokeStyle = "#000000";
     context.lineJoin = "round";
-    context.lineWidth = 5;
+    context.lineWidth = 8;
 
     for(var i=0; i < clickX.length; i++) {
         context.beginPath();
@@ -90,4 +108,12 @@ function calculateOffset($el, offsetType = 'offsetLeft', offset = 0) {
     }
 
     return calculateOffset($el.offsetParent, offsetType, offset + $el[offsetType]);
+}
+
+function clearCanvas() {
+    context.clearRect(0, 0, 400, 200);
+
+    clickX = [];
+    clickY = [];
+    drag = [];
 }

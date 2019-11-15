@@ -1,0 +1,5 @@
+.draw-tool canvas {
+    max-width: 100%;
+    border: 2px solid #2e59d9;
+    margin-bottom: 1em;
+}

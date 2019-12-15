@@ -20,6 +20,8 @@ let paint, clickX = [], clickY = [], drag = [];
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    createRandom();
+
     canvas.onmousedown = function(e) {
         paint = true;
         addClick(e.pageX - canvasLeft, e.pageY - canvasTop);
@@ -87,7 +89,7 @@ function redraw() {
 
     context.strokeStyle = "#000000";
     context.lineJoin = "round";
-    context.lineWidth = 8;
+    context.lineWidth = 12;
 
     for(var i=0; i < clickX.length; i++) {
         context.beginPath();
@@ -113,7 +115,18 @@ function calculateOffset($el, offsetType = 'offsetLeft', offset = 0) {
 function clearCanvas() {
     context.clearRect(0, 0, 400, 200);
 
+    lastRecognizedId = '';
+    createRandom();
+
     clickX = [];
     clickY = [];
     drag = [];
+}
+
+function createRandom() {
+    let len = Math.round(Math.random() * 5), r = [];
+    for(let i = 0; i < len; i++) {
+        r.push(Math.round(Math.random() * 9));
+    }
+    document.getElementById('random').innerText = r.join('');
 }

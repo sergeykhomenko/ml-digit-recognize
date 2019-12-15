@@ -3,3 +3,34 @@
     border: 2px solid #2e59d9;
     margin-bottom: 1em;
 }
+
+#attemptsTable tbody td,
+#digitsTable tbody td {
+    color: #fff;
+    vertical-align: middle;
+    text-align: center;
+    font-weight: bold;
+}
+
+.example-point {
+    display: inline-block;
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    margin-right: 1em;
+}
+
+.datatable__labels {
+    display: flex;
+    justify-content: space-between;
+}
+
+.datatable__labels p {
+    display: flex;
+    align-items: center;
+}
+
+.dataTables_length,
+.dataTables_info {
+    display: none;
+}
